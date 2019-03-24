@@ -22,11 +22,7 @@ public abstract class CustomPatternTextWatcher implements TextWatcher {
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
         cursorComplement = s.length()- editText.getSelectionStart();
-        if (count > after) {
-            backspacingFlag = true;
-        } else {
-            backspacingFlag = false;
-        }
+        backspacingFlag = count > after;
     }
 
     @Override
@@ -36,18 +32,18 @@ public abstract class CustomPatternTextWatcher implements TextWatcher {
 
     @Override
     public void afterTextChanged(Editable s) {
-        if(!editedFlag){
-            if(!backspacingFlag) {
-                editedFlag = true;
-                editText.setText(getFormattedText(s.toString()));
-                int selection = editText.getText().length() - cursorComplement + 1;
-                if(selection>editText.getText().length()){
-                    selection = editText.getText().length();
-                }
-                editText.setSelection(selection);
-            }
-        } else {
+        if (editedFlag) {
             editedFlag = false;
+            return;
+        }
+        if (!backspacingFlag) {
+            editedFlag = true;
+            editText.setText(getFormattedText(s.toString()));
+            int selection = editText.getText().length() - cursorComplement + 1;
+            if (selection > editText.getText().length()) {
+                selection = editText.getText().length();
+            }
+            editText.setSelection(selection);
         }
     }
 

@@ -13,30 +13,33 @@ import android.widget.FrameLayout;
 
 public class AnimationUtils {
 
-    public static void expand(final View v) {
-        v.measure(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        final int targetHeight = v.getMeasuredHeight();
-        int duration = ((int)(targetHeight/v.getContext().getResources().getDisplayMetrics().density));
-        expand(v, duration, null);
+    public static void expand(final View view) {
+        view.measure(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        final int targetHeight = view.getMeasuredHeight();
+        int duration = ((int)(targetHeight/view.getContext().getResources().getDisplayMetrics().density));
+        expand(view, duration, targetHeight, null);
     }
 
     public static void expand(final View v, int duration) {
-        v.measure(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
         expand(v, duration, null);
     }
 
-    public static void expand(final View v, int duration, AnimationEndListener listener) {
-        v.measure(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        final int targetHeight = v.getMeasuredHeight();
-        v.getLayoutParams().height = 1;
-        v.setVisibility(View.VISIBLE);
+    public static void expand(final View view, int duration, Animation.AnimationListener listener) {
+        view.measure(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        final int targetHeight = view.getMeasuredHeight();
+        expand(view, duration, targetHeight, listener);
+    }
+
+    public static  void expand(final View view, int duration, final int targetHeight, Animation.AnimationListener listener) {
+        view.getLayoutParams().height = 1;
+        view.setVisibility(View.VISIBLE);
         Animation expandAnimation = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                v.getLayoutParams().height = interpolatedTime == 1
+                view.getLayoutParams().height = interpolatedTime == 1
                         ? FrameLayout.LayoutParams.WRAP_CONTENT
                         : (int)(targetHeight * interpolatedTime);
-                v.requestLayout();
+                view.requestLayout();
             }
 
             @Override
@@ -48,29 +51,33 @@ public class AnimationUtils {
         if(listener!=null) {
             expandAnimation.setAnimationListener(listener);
         }
-        v.startAnimation(expandAnimation);
+        view.startAnimation(expandAnimation);
     }
 
-    public static void collapse(final View v) {
-        final int initialHeight = v.getMeasuredHeight();
-        int duration = ((int)(initialHeight/v.getContext().getResources().getDisplayMetrics().density));
-        collapse(v, duration, null);
+    public static void collapse(final View view) {
+        final int initialHeight = view.getMeasuredHeight();
+        int duration = ((int)(initialHeight/view.getContext().getResources().getDisplayMetrics().density));
+        collapse(view, duration, initialHeight, null);
     }
 
     public static void collapse(final View v, int duration) {
         collapse(v, duration, null);
     }
 
-    public static void collapse(final View v, int duration, AnimationEndListener listener) {
-        final int initialHeight = v.getMeasuredHeight();
+    public static void collapse(final View view, int duration, Animation.AnimationListener listener) {
+        final int initialHeight = view.getMeasuredHeight();
+        collapse(view, duration, initialHeight, listener);
+    }
+
+    public static void collapse(final View view, int duration, final int initialHeight, Animation.AnimationListener listener) {
         Animation collapseAnimation = new Animation() {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 if(interpolatedTime == 1){
-                    v.setVisibility(View.GONE);
+                    view.setVisibility(View.GONE);
                 } else {
-                    v.getLayoutParams().height = initialHeight - (int)(initialHeight * interpolatedTime);
-                    v.requestLayout();
+                    view.getLayoutParams().height = initialHeight - (int)(initialHeight * interpolatedTime);
+                    view.requestLayout();
                 }
             }
 
@@ -83,15 +90,14 @@ public class AnimationUtils {
         if(listener!=null) {
             collapseAnimation.setAnimationListener(listener);
         }
-        v.startAnimation(collapseAnimation);
+        view.startAnimation(collapseAnimation);
     }
-
 
     public static void rotate(View view, int duration, float fromDegrees, float toDegrees){
         rotate(view, duration, fromDegrees, toDegrees, null);
     }
 
-    public static void rotate(View view, int duration, float fromDegrees, float toDegrees, AnimationEndListener listener){
+    public static void rotate(View view, int duration, float fromDegrees, float toDegrees, Animation.AnimationListener listener){
         RotateAnimation rotateAnimation = new RotateAnimation(fromDegrees, toDegrees,
                 Animation.RELATIVE_TO_SELF, 0.5f,
                 Animation.RELATIVE_TO_SELF, 0.5f);

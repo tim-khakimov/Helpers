@@ -11,7 +11,7 @@ import android.util.Log;
 public class Preferences {
 
     private static final String TAG = Preferences.class.toString();
-    private static final String APP_PREFERENCES = "app_preferences";
+    private static final String APP_PREFERENCES = "com.timkhakimov.app.Preferences";
     private static final int VERSION = 1;
 
     public static String getAppPreferences(){
